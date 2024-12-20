@@ -1,9 +1,9 @@
 from Values.Constants import Const
 from Values.Lbl import Label
 from Table import table
+from Slicer import slice
+
 res = []
-
-
 def inputer():
     r = []
     print('Введите внутренний и внешний диаметры слоев начиная с внутреннего')
@@ -12,12 +12,8 @@ def inputer():
 
     be1 = float(input(Label.inpSigmae1)) * Const.k
     pkn = float(input(Label.inpPkn)) * Const.k
-
-    return r, be1, pkn
-
-
-def printer(name, ):
-    print(round(name, 3), end = '  ' )
+    l = float(input(Label.inpL))
+    return r, be1, pkn, l
 
 
 ###############################################    Находим оптимальное соотношение слоев
@@ -35,12 +31,14 @@ def ratioRad(r):
     return r
 
 
-r, be1, pkn = inputer()
+r, be1, pkn, l = inputer()
 
 be2 = Const.strengthCategory * be1
 
 r = ratioRad(r)
-res.append(r[2])
+for i in range(len(r)):
+    res.append(r[i])
+# res.append(r)
 # printer(Label.nameD2, r[2])
 
 # Для простоты написания кода и упрощения формул
@@ -48,6 +46,7 @@ a = pow(r[0], 2)
 b = pow(r[2], 2)
 c = pow(r[1], 2)
 
+slice(l)
 
 # расчёт предела упругого сопротивления трубы и тангенциального натяжения ведут по формуле для максимальных тангенциальных деформаций
 def tangtangDeform():
@@ -83,7 +82,11 @@ def elsticRadDeform(y2min):
     # printer(Label.nameP1Rad, p1 / Const.k)
     return p1
 
-
+'''
+цикл с нахождением радиусов, зависящим от сечения скрепления, 
+переопределить записать каждой переменной в отдельные массивы для удобства последующего вывода, 
+захерачить все в tabules, для корректного вывода
+'''
 ###################################################   Определение оптимального натяга между слоями
 def calk(r2, be1, pkn, ):
     # Предел упругого сопротивления кожуха
@@ -101,23 +104,23 @@ def calk(r2, be1, pkn, ):
     ###################################################   Проверка прочности скреплённого ствола
 
     q2min = q2 + Const.dopyskNatyagaMin
-    res.append(q2min / Const.k)
+    Const.arr_q2min.append(q2min / Const.k)
     # printer(Label.nameQ2Min, q2min / Const.k)
 
     q2max = q2 + Const.dopyskNatyagaMax
-    res.append(q2max / Const.k)
+    Const.arr_q2max.append(q2max / Const.k)
     # printer(Label.nameQ2Max, q2max / Const.k)
 
     y2min = q2min / (2 * r2)
-    res.append(y2min / Const.k)
+    Const.arr_y2min.append(y2min / Const.k)
     # printer(Label.nameY2min, y2min / Const.k)
 
     y2max = q2max / (2 * r2)
-    res.append(y2max / Const.k)
+    Const.arr_y2max.append(y2max / Const.k)
     # printer(Label.nameY2max, y2max / Const.k)
 
     py2 = 1.5 * be2 * ((c - b) / ((2 * c) + b))
-    res.append(py2 / Const.k)
+    Const.arr_py2.append(py2 / Const.k)
     # printer(Label.namePy2, py2 / Const.k)
 
     if py2 <= 1.5 * be1 * (a / b):
@@ -126,25 +129,27 @@ def calk(r2, be1, pkn, ):
     else:
         p1 = elsticRadDeform(y2min)
 
-    res.append(p1 / Const.k)
+    Const.arr_p1.append(p1 / Const.k)
 
     pi2 = Const.E * y2max * ((c - b) * (b - a)) / (2 * b * (c - a))
-    res.append(pi2 / Const.k)
+    Const.arr_pi2.append(pi2 / Const.k)
     # printer(Label.namePi2, pi2 / Const.k)
 
     pii2 = py2 - pi2
-    res.append(pii2 / Const.k)
+    Const.arr_pii2.append(pii2 / Const.k)
     # printer(Label.namePii2, pii2 / Const.k)
 
     p21 = pii2 * (b / a) * ((c - a) / (c - b))
-    res.append(p21 / Const.k)
+    Const.arr_p21.append(p21 / Const.k)
     # printer(Label.nameP21, p21 / Const.k)
 
     n1 = p1 / pkn
-    res.append(n1)
+    Const.arr_n1.append(n1)
 
     n2 = p21 / pkn
-    res.append(n2)
+    Const.arr_n2.append(n2)
+
+    return res
 
 
 calk(r[2], be1, pkn)

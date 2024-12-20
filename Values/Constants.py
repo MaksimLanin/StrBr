@@ -10,3 +10,18 @@ class Const:
     dopyskNatyagaMax = 0.075
     #Количество слоев, без учета трубы
     kc = 1
+    arr_d1 = []
+    arr_d3 = []
+    arr_d2 = []
+    arr_q2min = []
+    arr_q2max = []
+    arr_y2min = []
+    arr_y2max = []
+    arr_py2 = []
+    arr_p1 = []
+    arr_pi2 = []
+    arr_pii2 = []
+    arr_p21 = []
+    arr_n1 = []
+    arr_n2 = []
+    arr_l = []
